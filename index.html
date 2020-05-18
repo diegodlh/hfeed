@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.9.1/dist/tagify.css" integrity="sha256-HBjaa1BluwfN/QbPQoYzib9ealrwYFHMNr5FwgoqEYg=" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="sticky-footer.css">  
+
+    <title>Subscribe Hypothesis annotations</title>
+   
+</head>
+<body onload="addOneEach()">
+
+<div class="container-fluid">
+
+    <div class="text-center">
+        <h2>Subscribe to web annotations in <a href="https://web.hypothes.is/">Hypothesis<a></h2>
+        <p class="lead">
+            Do you want to know when someone annotates your webpages? Do you want to follow somebody's annotations?<br>
+            You have come to the right place.
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-md">
+            <h3>Instructions</h3>
+            <p>
+                Fill in the fields to narrow your search.<br>
+                Within each field you may enter one or more optional terms: they are combined with an OR operator.<br>
+                Your target annotations must match all fields filled in: they are combined with an AND operator.<br>
+                Fields left blank will be ignored.<br>
+                For non-public annotations, see judell's <a href="https://github.com/judell/h_notify">notify</a>.
+            </p>
+            <div class="card">
+                <div class="card-header">
+                    Example 1
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Notify me when anyone annotates the English Wikipedia, anywhere:
+                    </p>
+                    <p class="card-text">
+                        <b>URIs: </b>https://en.wikipedia.com/*
+                    </p>
+
+                </div>
+            </div><br>
+            <div class="card">
+                <div class="card-header">
+                    Example 2
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Notify me when users Alice or Bob annotate an article in the Hypothesis blog:
+                    </p>
+                    <p class="card-text">
+                        <b>URIs: </b>web.hypothes.is/blog/*<br>
+                        <b>Users: </b>Alice, Bob
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <h3>Narrow your search</h3>
+            <form id='input'>
+                <div class="form-group">
+                    <!-- do not allow spaces -->
+                    <label for="uris">URIs</label>
+                    <input type="text" class="form-control" id="uris" placeholder="uri">
+                    <small id="uriHelp" class="form-text text-muted">
+                    Wildcards * for any character sequence and _ for any single character are <a href="https://h.readthedocs.io/en/latest/api-reference/#tag/annotations/paths/~1search/get">only permitted</a> in the path and query parts of the URI.</small>
+                </div>
+                <div class="form-group">
+                    <!-- do not allow spaces -->
+                    <label for="users">Users</label>
+                    <input type="text" class="form-control" id="users" placeholder="username">
+                    <small id="userHelp" class="form-text text-muted">
+                    Usernames may only have letters, numbers, periods or underscores.</small>
+                </div>
+                <div class="form-group">
+                    <!-- do not allow spaces -->
+                    <label for="groups">Groups</label>
+                    <input type="text" class="form-control" id="groups" placeholder="group-id">
+                    <small id="groupHelp" class="form-text text-muted">
+                    Find Group ID in the groups' URL. Only <a href="https://web.hypothes.is/help/annotating-with-groups/">public groups</a> (e.g., <a href="https://hypothes.is/groups/ZLx677oM/climate-feedback">"Climate Feedback"</a>). For private groups see judell's <a href="https://github.com/judell/h_notify">notify</a>.</small>
+                </div>
+                <div class="form-group">
+                    <label>Any (URI, quote, content or tags)</label><br>
+                    <small id="anyHelp" class="form-text text-muted">
+                    Use full words ("word" doesn't match "words").
+                    Tag search is <a href="https://hyp.is/o9yIjpb-EeqncC8B74lb0g/h.readthedocs.io/en/latest/api-reference/">not exact</a> (i.e., "web" matches "web annotation" too).</small>
+                    <div class="input-group" style="display:none">
+                        <input type="text" class="form-control" name="anys" disabled>
+                        <div class="input-group-append">
+                            <button class="btn btn-danger" type="button" onclick="del(this)">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="addAny" type="button" class="btn btn-success btn-block" onclick="add(this)">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <p>
+                    <a class="btn btn-secondary" data-toggle="collapse" href="#more" role="button" aria-expanded="false" aria-controls="more">
+                    More
+                    </a>
+                </p>
+                <div class="collapse" id="more">
+                    <div class="card card-body">
+                        <div class="form-group">
+                            <label>Quote</label><br>
+                            <small id="quoteHelp" class="form-text text-muted">
+                            Full words only ("word" doesn't match "words"). No spaces.</small>
+                            <div class="input-group" style="display:none">
+                                <input type="text" class="form-control" name="quotes" disabled delimiters="/, /">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger" type="button" onclick="del(this)">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                                <i class="fa fa-add"></i>
+                            </div>
+                            <button id="addQuote"  type="button" class="btn btn-success btn-block" onclick="add(this)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label>Text (content)</label><br>
+                            <small id="textHelp" class="form-text text-muted">
+                            Full words only ("word" doesn't match "words"). No spaces.</small>
+                            <div class="input-group" style="display:none">
+                                <input type="text" class="form-control" name="texts" disabled>
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger" type="button" onclick="del(this)">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="addText" type="button" class="btn btn-success btn-block" onclick="add(this)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label>Tags</label><br>
+                            <small id="tagHelp" class="form-text text-muted">
+                            Full words only ("word" doesn't match "words"). No spaces. Tag search is <a href="https://hyp.is/o9yIjpb-EeqncC8B74lb0g/h.readthedocs.io/en/latest/api-reference/">not exact</a> (i.e., "web" matches "web annotation" too).</small>
+                            <div class="input-group" style="display:none">
+                                <input type="text" class="form-control" name="tags" disabled>
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger" type="button" onclick="del(this)">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="addTags" type="button" class="btn btn-success btn-block" onclick="add(this)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" onclick="generate()">Generate!</button>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-md">
+            <h3>Done!</h3>
+            <p>
+                Click Generate! and copy the <a href="https://web.hypothes.is/help/atom-rss-feeds-for-annotations/">RSS or Atom Feed URL</a> below to receive notifications by email (with <a href="https://blogtrottr.com/">Blogtrottr</a> or <a href="https://ifttt.com/applets/147561p-rss-feed-to-email">IFTTT</a>), <a href="https://web.hypothes.is/blog/using-atom-feeds-to-receive-hypothesis-notifications-in-slack/">Slack</a>, <a href="https://ifttt.com/create/if-new-feed-item?sid=2">Telegram</a>, feed aggregators (e.g., <a href="https://feedly.com/">Feebly</a>), and more.
+            </p>
+            <form id="output">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">RSS</i></span>
+                        </div>
+                        <input type="text" class="form-control" id="rss" readonly autocomplete="off">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-dark" onclick="copy(this)">
+                                <i class="fa fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Atom</i></span>
+                        </div>
+                        <input type="text" class="form-control" id="atom" readonly autocomplete="off">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-dark" onclick="copy(this)">
+                                <i class="fa fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="card">
+                <div class="card-header">
+                    Feed preview
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        Coming soon...
+                        <div id="feed">                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer fixed-bottom">
+    <div class="container">
+        <span class="text-muted">Made with <i class="fa fa-heart"></i> by <a href="https://diegodlh.conversodromo.com.ar/">diegodlh</a>. Source code in <a href="">GitHub</a>. Uses <a href="https://github.com/yairEO/tagify">Tagify</a></span>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.9.1/dist/tagify.min.js" integrity="sha256-ZIf4iQs6jLy/taojvdJ9MEcvGVP/zV17GtWVxkILMi4=" crossorigin="anonymous"></script>
+
+<script>
+    new Tagify(document.querySelector('input[id=uris]'), {
+        // pattern: //,
+        // keepInvalidTags: true,
+        delimiters: /[, ]/
+    });
+    new Tagify(document.querySelector('input[id=users]'), {
+        pattern: /^[a-zA-z0-9_.]{3,30}$/,
+        keepInvalidTags: true,
+        delimiters: /[, ]/
+    });
+    new Tagify(document.querySelector('input[id=groups]'), {
+        pattern: /^[a-zA-z0-9]{8}$/,
+        keepInvalidTags: true,
+        delimiters: /[, ]/
+    });
+</script>
+<script src="scripts.js"></script>
+
+</body>
+</html>
