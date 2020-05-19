@@ -40,7 +40,11 @@ function generate() {
     var uris = eval(form.uris.value);
     if (uris) {
         for (uri of uris) {
-            query.push('wildcard_uri=' + uri.value);
+            parameter = 'uri'
+            if (uri.value.includes('*') || uri.value.includes('_')) {
+                parameter = 'wildcard_uri';
+            }
+            query.push(parameter + '=' + uri.value);
         }
     }
 
