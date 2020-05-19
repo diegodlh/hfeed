@@ -232,8 +232,8 @@
 
 <script>
     new Tagify(document.querySelector('input[id=uris]'), {
-        // pattern: //,
-        // keepInvalidTags: true,
+        pattern: /^(([a-zA-Z0-9+.-]+:\/\/)?[^:\/*_]+(\/.*)?|[a-zA-Z0-9+.-]+:[^\/].*)$/,
+        keepInvalidTags: true,
         delimiters: /[, ]/
     });
     new Tagify(document.querySelector('input[id=users]'), {
