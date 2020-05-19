@@ -70,7 +70,7 @@ function generate() {
     for (any of anys) {
         any = eval(any.value);
         if (any) {
-            any = any.map(item => '"' + item.value + '"');
+            any = any.map(item => '"' + encodeURI(item.value) + '"');
             query.push('any=' + any.join('|'))
         }
     }
