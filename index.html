@@ -83,10 +83,10 @@
                 </div>
                 <div class="form-group">
                     <!-- do not allow spaces -->
-                    <label for="groups">Groups</label>
+                    <label for="groups">Group</label>
                     <input type="text" class="form-control" id="groups" placeholder="group-id">
                     <small id="groupHelp" class="form-text text-muted">
-                    Find Group ID in the groups' URL. Only <a href="https://web.hypothes.is/help/annotating-with-groups/">public groups</a> (e.g., <a href="https://hypothes.is/groups/ZLx677oM/climate-feedback">"Climate Feedback"</a>). For private groups see judell's <a href="https://github.com/judell/h_notify">notify</a>.</small>
+                    Only one group allowed. Find Group ID in the groups' URL. Only <a href="https://web.hypothes.is/help/annotating-with-groups/" target="_blank">public groups</a> (e.g., <a href="https://hypothes.is/groups/ZLx677oM/climate-feedback" target="_blank">"Climate Feedback"</a>). For private groups see judell's <a href="https://github.com/judell/h_notify" target="_blank">notify</a>.</small>
                 </div>
                 <div class="form-group">
                     <label>Any (URI, quote, content or tags)</label><br>
@@ -243,8 +243,9 @@
     });
     new Tagify(document.querySelector('input[id=groups]'), {
         pattern: /^[a-zA-z0-9]{8}$/,
-        keepInvalidTags: true,
-        delimiters: /[, ]/
+        // keepInvalidTags: true,
+        delimiters: /[, ]/,
+        maxTags: 1  // only one group allowed
     });
 </script>
 <script src="scripts.js"></script>
