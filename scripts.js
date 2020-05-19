@@ -9,6 +9,9 @@ function add(element) {
     if (['quotes', 'texts', 'tags'].includes(input.name)) {
         settings.delimiters = /[, ]/
     }
+    if (input.name == 'tags') {
+        settings.maxTags = 1  // no options allowed
+    }
     new Tagify(input, settings);
 }
 function del(element) {
